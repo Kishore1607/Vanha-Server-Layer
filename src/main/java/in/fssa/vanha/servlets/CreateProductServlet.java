@@ -56,7 +56,7 @@ public class CreateProductServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		response.sendRedirect("./../products");
+		response.sendRedirect("/products/profile");
 	}
 
 }
