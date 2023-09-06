@@ -11,13 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import in.fssa.vanha.exception.ServiceException;
 import in.fssa.vanha.exception.ValidationException;
-import in.fssa.vanha.model.ProductDTO;
+import in.fssa.vanha.model.ProductDetailDTO;
 import in.fssa.vanha.service.ProductService;
 
 /**
  * Servlet implementation class SellerProductDetailServlet
  */
-@WebServlet("/products/user/productdetail")
+@WebServlet("/home/profile/productdetail")
 public class SellerProductDetailServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class SellerProductDetailServlet extends HttpServlet {
 		String productId = request.getParameter("productId");
 
 		try {
-			ProductDTO product = ProductService.sellerProductdetail(productId);
+			ProductDetailDTO product = ProductService.productdetail(productId);
 
 			request.setAttribute("productDetail", product);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/seller_product.jsp");

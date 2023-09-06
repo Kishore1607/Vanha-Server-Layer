@@ -1,6 +1,11 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Set"%>
+<%@page import="in.fssa.vanha.model.ProductDetailDTO"%>
+<%@page import="in.fssa.vanha.model.BidDTO"%>
+<%@page import="in.fssa.vanha.model.ListProductDTO"%>
 <%@page import="in.fssa.vanha.model.BidHistory"%>
 <%@page import="in.fssa.vanha.model.Assets"%>
-<%@page import="in.fssa.vanha.model.ProductDTO"%>
 <%@page import="in.fssa.vanha.service.ProductService"%>
 <%@page import="in.fssa.vanha.model.Product"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
@@ -8,226 +13,380 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link
-	href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap"
+	href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,"
 	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+	integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+	crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
+:root {
+	--primary: #7d8e95;
+	--secondary: #222f30;
+	--tertiary: #ffd8af;
+	--fourth: #f1b194;
+	--fifth: #4c585e;
+}
+
 body {
+	font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+}
+
+.main {
+	margin-top: 50px;
 	display: flex;
+	justify-content: space-evenly;
 }
 
-.profile-img {
-	width: 55px;
-	height: 55px;
-	margin: 5px 5px 0px 0px;
-	border-radius: 50%;
+.main_left {
+	width: 800px;
+	display: grid;
+	grid-template-columns: repeat(2, 450px);
+	margin-top: 20px;
 }
 
-.card {
-	padding: 20px;
-	width: 330px;
-	min-height: 370px;
-	border-radius: 20px;
-	background: #e8e8e8;
-	box-shadow: 5px 5px 6px #dadada, -5px -5px 6px #f6f6f6;
-	transition: 0.4s;
-	font-family: 'Montserrat', sans-serif;
+.grid-item {
+	max-width: 75%;
+	max-height: 80%;
+	box-sizing: border-box;
+	padding: 10px;
+	text-align: center;
 }
 
-.card:hover {
-	translate: 0 -10px;
+.grid-item img {
+	max-width: 100%; /* Ensure images don't exceed their container */
 }
 
-.card-title {
+.desc {
+	color: var(--fifth);
+}
+
+#description {
+	width: 500px;
+	max-height: 150px;
+	overflow: auto;
+}
+
+.rate {
 	font-size: 18px;
-	font-weight: 600;
-	color: #2e54a7;
-	margin: 15px 0 0 10px;
+	height: 40px;
+	display: flex;
+	padding-top: 15px;
+	float: inline-start;
+}
+
+.duration {
+	height: 40px;
+	display: flex;
+	padding-bottom: 15px;
+	float: inline-start;
+	border-width: 0px 0px 2px 0px;
+	border-style: solid;
+	border-color: rgb(160, 160, 160);
+	margin-bottom: 10px;
+}
+
+#duration {
+	padding-top: 2px;
+	color: var(--primary);
+}
+
+.inr b {
+	color: var(--primary);
+}
+
+.rate p, .duration p {
+	font-size: 18px;
+	padding: 4px 10px 0px 0px;
+	color: var(--fifth);
 }
 
 .product_img {
-	width: 330px;
-	height: 320px;
+	width: 500px;
+	height: 300px;
+	border-radius: 30px;
+	background: #e0e0e0;
+	box-shadow: 9px 9px 18px #d7d7d7, -9px -9px 18px #e9e9e9;
+}
+
+#prod_price {
+	padding-right: 5px;
+	color: var(--secondary);
+}
+
+#prod_date {
+	padding: 2px 5px 0px 0px;
+	color: var(--secondary);
+}
+
+.prod_name {
+	color: var(--secondary);
+}
+
+.bid-area button {
+	width: 130px;
+}
+
+.button1 i {
+	padding-right: 10px;
+}
+
+.bid-amount {
+	height: 28px;
+	margin-right: 10px;
+	outline: none;
+}
+
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button
+	{
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.seller-profile {
+	width: 360px;
+	justify-content: space-between;
+	display: flex;
+	border: 2px solid rgb(204, 204, 204);
+	margin-bottom: 30px;
 	border-radius: 10px;
+	transition: 0.5s ease-out;
 }
 
-.card-body {
-	margin: 13px 0 0 10px;
-	color: rgb(31, 31, 31);
-	font-size: 15px;
+.seller-profile:hover {
+	background-color: var(--secondary);
+	color: var(--tertiary);
 }
 
-.footer {
-	border: 1px 0 0 0 solid gray;
-	font-size: 13px;
-	color: #636363;
+.seller_img {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	margin: 10px;
 }
 
-.by-name {
-	font-weight: 700;
+.seller-info {
+	text-align: center;
+	width: 360px;
+	margin: 0px 10px 10px 0px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.box {
+	display: flex;
+}
+
+.seller-info h1 {
+	color: var(--fifth);
+}
+
+#seller_name {
+	width: 230px;
+}
+
+.btn {
+	margin: 20px;
+}
+
+.button {
+	padding: 10px 20px;
+	border-radius: 5px;
+	border: none;
+	outline: none;
+	-webkit-transition: .4s ease-in-out;
+	transition: .4s ease-in-out;
+	background-color: #252525;
+	color: white;
+}
+
+.button:hover {
+	background-color: rgb(93, 220, 93);
+	color: white;
+}
+
+.button1 {
+	padding: 10px 20px;
+	border-radius: 5px;
+	margin-left: 20px;
+	border: none;
+	outline: none;
+	-webkit-transition: .4s ease-in-out;
+	transition: .4s ease-in-out;
+	background-color: #252525;
+	color: white;
+}
+
+.button1:hover {
+	background-color: rgb(249, 82, 31);
+	color: white;
+}
+
+.button3 {
+	display: block;
+	width: 60px;
+	padding: 10px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.button3:hover {
+	background-color: #0056b3;
 }
 
 .container {
-	width: 300px;
-	height: 320px;
-	background-color: #343541;
-	border-radius: 8px;
-	display: flex;
-	flex-direction: column;
+	width: 600px;
+	height: 500px;
+	overflow: hidden;
 }
 
 .nav-bar {
-	width: 100%;
-	height: 40px;
-	background-color: none;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+	background-color: #333;
+	color: white;
+	padding: 10px;
+	text-align: center;
 }
 
 .nav-bar a {
 	color: white;
-	white-space: nowrap;
-	margin-left: 10px;
-	user-select: none;
-}
-
-.line {
-	width: 80%;
-	padding: 10px 5px 10px 5px;
-	margin-left: 20px;
-	background-color: white;
-	border-radius: 30px;
-	background-color: white;
-}
-
-.bid {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	max-width: 500px;
-	user-select: none;
+	text-decoration: none;
+	font-weight: bold;
 }
 
 .bid-container {
-	width: 80%;
-	height: 80%;
+	max-height: 100%;
+	overflow: auto;
 }
 
-.text {
-	font-size: 0.8rem;
-	text-align: left;
-	width: 100%;
-	color: black;
-	font-weight: bold;
-	margin-bottom: 3px;
+.line {
+	border-bottom: 1px solid #ccc;
+	padding: 10px;
 }
 
-.input {
-	border-radius: 8px;
-	padding: 7px 16px;
-	box-shadow: rgba(77, 79, 82, 0.2) 0px 8px 24px;
-	border: 2px solid rgb(184, 180, 180);
-	font-size: 0.8rem;
-	outline: none;
-	transition: 0.5s ease;
+.line p {
+	margin: 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
-.input:hover {
-	box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-	border-color: rgb(138, 175, 255);
+.no {
+	text-align: center
 }
 
-.input:focus {
-	border: 2px solid rgb(57, 120, 255);
-	box-shadow: rgba(133, 130, 130, 0.1) 0px 4px 12px;
-	transform: scale(0.99);
-}
-
-.input::placeholder {
-	font-size: 13px;
-	font-weight: 600;
-}
-
-.button {
-	padding: 6px 15px;
-	text-align: center;
-	color: rgb(95, 87, 87);
-	cursor: pointer;
-	background-color: white;
-	border-radius: 6px;
-	border: none;
-	transition: 0.5s;
-	width: 100%;
-	margin-top: 7px;
-	font-size: 13px;
-	box-shadow: rgba(104, 100, 100, 0.1) 0px 4px 6px -1px,
-		rgba(49, 42, 42, 0.06) 0px 2px 4px -1px;
-}
-
-.button:hover {
-	border-radius: 7px;
-	background-color: rgb(243, 242, 242);
-	border-color: rgb(236, 232, 232);
+.buyer_img {
+	max-width: 50px;
+	max-height: 50px;
+	border-radius: 50%;
+	margin-left: 10px;
 }
 </style>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 </head>
 <body>
+	<a href="../profile">
+		<button>Back</button>
+	</a>
 	<%
-	ProductDTO product = (ProductDTO) request.getAttribute("productDetail");
+	ProductDetailDTO product = (ProductDetailDTO) request.getAttribute("productDetail");
+	Set<Assets> assetsSet = product.getAssets();
+	List<Assets> assetsList = new ArrayList<>(assetsSet);
 	%>
-	<div class="card">
-		<%
-		for (Assets asset : product.getAssets()) {
-		%>
-		<div>
-			<img src="<%=asset.getValue()%>" alt="Image" class="product_img">
-		</div>
-		<%
-		}
-		%>
-		<p class="card-title"><%=product.getProduct().getName()%></p>
-		<p class="card-body"><%=product.getProduct().getDescription()%></p>
-		<p class="card-body">
-			<span class="by-name">Price: </span><%=product.getProduct().getPrice()%>
-		</p>
-		<p class="card-body">
-			<span class="by-name">Used: </span><%=product.getProduct().getUsedPeriod()%>
-			<span><%=product.getProduct().getUsedDuration()%></span>
-		</p>
-
-		<a
-			href="productdetail/edit?productId=<%=product.getProduct().getProductId()%>">
-			<button>Edit</button>
-		</a>
-		<a
-			href="productdetail/delete?productId=<%=product.getProduct().getProductId()%>">
-		<button>Delete</button>
-		</a>
-	</div>
-
-	<div class="container">
-		<div class="nav-bar">
-			<a>Bids</a>
-		</div>
-		<div class="bid-container">
+	<main class="main">
+		<section class="main_left">
 			<%
-			for (BidHistory bid : product.getBids()) {
+			for (int i = 0; i < 4; i++) {
+				Assets asset = (i < assetsList.size()) ? assetsList.get(i) : null;
 			%>
-			<div class="line">
-				<p>
-					<span><%=bid.getBuyerName()%></span><span><%=bid.getBidAmount()%></span><span><%=bid.getBuyerName()%></span><span><%=bid.getBuyerNumber()%></span><span><%=bid.getBuyerLocation()%></span>
-				</p>
+			<div class="grid-item">
+				<img
+					src="<%=(asset != null) ? asset.getValue() : "https://iili.io/J9amRDJ.jpg"%>"
+					alt="<%=product.getProductName()%> Image" class="product_img">
 			</div>
 			<%
 			}
 			%>
-		</div>
-	</div>
+		</section>
+		<section class="main_right">
+			<div class="product-detail">
+				<h2 class="prod_name"><%=product.getProductName()%></h2>
+				<p class="desc">
+					<b>Description :</b>
+				</p>
+				<p id="description"><%=product.getDescription()%>
+				</p>
+				<div class="rate">
+					<p>
+						<b>Price :</b>
+					</p>
+					<h3 id="prod_price"><%=product.getPrice()%></h3>
+					<h3 class="inr">
+						<b>(INR)</b>
+					</h3>
+				</div>
+				<div class="duration">
+					<p>
+						<b>Used :</b>
+					</p>
+					<h3 id="prod_date"><%=product.getUsedPeriod()%></h3>
+					<h3 id="duration"><%=product.getUsedDuration()%></h3>
+				</div>
+				<div class="btn">
+					<a href="productdetail/edit?productId=<%=product.getProductId()%>">
+						<button class="button">EDIT</button>
+					</a> <a
+						href="productdetail/delete?productId=<%=product.getProductId()%>">
+						<button class="button1">DELETE</button>
+					</a>
+				</div>
+				<div class="container">
+					<div class="nav-bar">
+						<a>Bids</a>
+					</div>
+					<div class="bid-container">
+						<%
+						boolean hasBids = false;
+						for (BidDTO bid : product.getBids()) {
+							if (bid == null) {
+						%>
+						<div class="line">
+							<p>There is no bid.</p>
+						</div>
+						<%
+						} else {
+						hasBids = true;
+						%>
+						<div class="line">
+							<p>
+								<img src="<%=bid.getBuyerImage()%>"
+									alt="<%=bid.getBuyerName()%> Image" class="buyer_img"><span><%=bid.getBuyerName()%></span><span><%=bid.getAmount()%></span>
+								<span><button class="button3">Sell</button></span>
+							</p>
+						</div>
+						<%
+						}
+						}
+
+						if (!hasBids) {
+						%>
+						<div class="no">
+							<p>There is no bid.</p>
+						</div>
+						<%
+						}
+						%>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
 
 </body>
 </html>

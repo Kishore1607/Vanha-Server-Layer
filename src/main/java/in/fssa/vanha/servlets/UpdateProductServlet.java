@@ -1,6 +1,8 @@
 package in.fssa.vanha.servlets;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,13 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import in.fssa.vanha.exception.ServiceException;
 import in.fssa.vanha.exception.ValidationException;
+import in.fssa.vanha.model.Assets;
 import in.fssa.vanha.model.Product;
 import in.fssa.vanha.service.ProductService;
 
 /**
  * Servlet implementation class UpdateProductServlet
  */
-@WebServlet("/products/user/productdetail/update")
+@WebServlet("/home/profile/productdetail/update")
 public class UpdateProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -47,15 +50,34 @@ public class UpdateProductServlet extends HttpServlet {
 		p.setMinPrice(min_price);
 		p.setUsedPeriod(period);
 
+		String[] asetIds = request.getParameterValues("asetId");
+		String[] urls = request.getParameterValues("url");
+		
+		Set<Assets> assetsList = new HashSet<>();
+
+		if (asetIds != null && urls != null && asetIds.length == urls.length) {
+
+			for (int i = 0; i < asetIds.length; i++) {
+				String asetId = asetIds[i];
+				String url = urls[i];
+
+				Assets asset = new Assets();
+				asset.setId(Integer.parseInt(asetId));
+				asset.setValue(url);
+
+				assetsList.add(asset);
+			}
+		}
+
 		try {
-			ps.update(p);
+			ps.update(p, assetsList);
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} catch (ValidationException e) {
 			e.printStackTrace();
 		}
 
-		String newURL = request.getContextPath() + "/products/user/productdetail?productId=" + id;
+		String newURL = request.getContextPath() + "/home/profile/productdetail?productId=" + id;
 		response.sendRedirect(newURL);
 	}
 

@@ -1,4 +1,5 @@
-<%@page import="in.fssa.vanha.model.ProductDTO"%>
+<%@page import="in.fssa.vanha.model.User"%>
+<%@page import="in.fssa.vanha.model.ListProductDTO"%>
 <%@page import="java.util.Set"%>
 <%@page import="in.fssa.vanha.service.ProductService"%>
 <%@page import="in.fssa.vanha.model.Product"%>
@@ -23,6 +24,13 @@ body {
 	width: 270px;
 	height: 250px;
 	border-radius: 10px;
+}
+
+.seller_img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	margin-right: 10px;
 }
 
 .card {
@@ -51,12 +59,29 @@ body {
 
 .text-title {
 	font-weight: bold;
+	margin-bottom: 5px;
 }
 
 .card:hover {
 	border-color: var(--primary);
 	background-color: rgb(233, 234, 255);
 	box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+}
+
+.info {
+	display: flex;
+	margin: 10px 0px 10px 0;
+}
+
+.line {
+	width: 65%;
+	border: 1px solid gray;
+	max-height: 0.5px;
+	margin: 10px 10px 0px;
+}
+
+.sellerInfo {
+	display: flex;
 }
 
 .grid-container {
@@ -67,59 +92,82 @@ body {
 	margin: 50px 0px;
 }
 
-.algn {
-	margin-top: 50px;
-}
 .button {
-    background-color: #007bff; 
-    color: #fff; 
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer; 
+	background-color: #007bff;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
 }
 
 .button:hover {
-    background-color: #0056b3;
+	background-color: #0056b3;
 }
 </style>
 <meta charset="ISO-8859-1">
 <title>All products of category</title>
 </head>
 <body>
-	
-	<a href="products/user">
-		<button class="button">Login</button>
-	</a>
 
 	<%
-	Set<ProductDTO> productList = (Set<ProductDTO>) request.getAttribute("products");
+	User user = (User) session.getAttribute("user");
+	%>
+	<%
+	if (user == null) {
+	%>
+	<a href="home/user">
+		<button class="button">Login</button>
+	</a>
+	<%
+	} else {
+	%>
+	<a href="home/profile">
+		<button class="button">Profile</button>
+	</a>
+	<%
+	}
+	%>
+
+
+	<%
+	Set<ListProductDTO> productList = (Set<ListProductDTO>) request.getAttribute("products");
 	%>
 	<div class="grid-container">
 		<%
-		for (ProductDTO product : productList) {
+		for (ListProductDTO product : productList) {
 		%>
 		<div class="card">
 			<div class="card-details">
-				<a
-					href="products/productdetail?productId=<%=product.getProduct().getProductId()%>">
-					<img src="<%=product.getAsset().getValue()%>"
-					alt="<%=product.getProduct().getName()%> Image" class="product_img">
+				<a href="home/productdetail?productId=<%=product.getProductId()%>">
+					<img src="<%=product.getAsset()%>"
+					alt="<%=product.getProductName()%> Image" class="product_img">
 				</a>
-				<h3 class="text-title"><%=product.getProduct().getName()%></h3>
+				<h3 class="text-title"><%=product.getProductName()%></h3>
 			</div>
 			<div class="text-body">
-				<span> <b>Price:</b> <%=product.getProduct().getPrice()%>
-					(INR)
+				<span> <b>Price:</b> <%=product.getPrice()%> (INR)
 				</span>
 			</div>
-			<div class="text-body">
-				<span> <b>Seller:</b> <%=product.getUser().getName()%>
-				</span>
+			<div class="info">
+				<div>Seller Info</div>
+				<div class="line"></div>
 			</div>
-			<div class="text-body">
-				<span> <b>Location:</b> <%=product.getUser().getLocation()%>
-				</span>
+			<div class="sellerInfo">
+				<div>
+					<img src="<%=product.getSellerImage()%>"
+						alt="<%=product.getSellerName()%> Image" class="seller_img">
+				</div>
+				<div>
+					<div class="text-body">
+						<span> <b>Seller:</b> <%=product.getSellerName()%>
+						</span>
+					</div>
+					<div class="text-body">
+						<span> <b>Location:</b> <%=product.getSellerLocation()%>
+						</span>
+					</div>
+				</div>
 			</div>
 
 		</div>

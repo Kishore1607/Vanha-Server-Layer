@@ -9,13 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import in.fssa.vanha.exception.ServiceException;
 import in.fssa.vanha.exception.ValidationException;
-import in.fssa.vanha.model.BidHistory;
 import in.fssa.vanha.service.BidHistoryService;
 
 /**
  * Servlet implementation class CreateBidServlet
  */
-@WebServlet("/products/productdetail/bid")
+@WebServlet("/home/productdetail/bid")
 public class CreateBidServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -26,23 +25,22 @@ public class CreateBidServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String id = request.getParameter("productId");
+		String productId = request.getParameter("productId");
+		System.out.println(productId);
+		String userId = request.getParameter("userEmail");
+		System.out.println(userId);
 		BidHistoryService bidService = new BidHistoryService();
-		BidHistory bid = new BidHistory();
-		bid.setBuyerUnique(request.getParameter("userEmail"));
-		bid.setProductUnique(id);
+
 		int amount = Integer.parseInt(request.getParameter("amount"));
-		bid.setBidAmount(amount);
-		
-		response.sendRedirect("./../productdetail?productId="+ id);
 
 		try {
-			bidService.create(bid);
+			bidService.create(amount, userId, productId);
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} catch (ValidationException e) {
 			e.printStackTrace();
 		}
+		response.sendRedirect("./../productdetail?productId=" + productId);
 	}
 
 }

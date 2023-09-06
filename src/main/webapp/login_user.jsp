@@ -3,65 +3,135 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon"
+	href="../assets/img/illustration/v-removebg-preview.png">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link
+	href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+	integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+	crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
+body {
+	font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+}
+
+.logo_re {
+	width: 400px;
+	height: 100px;
+	background-color: rgb(1, 1, 1);
+	rotate: -90deg;
+	position: absolute;
+	top: 215px;
+	right: 200px;
+	border-radius: 25px;
+}
+
 .form {
-	text-aling: center;
-	max-width: 600px;
-	margin: 0 auto;
-	padding: 20px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	font-family: Arial, sans-serif;
-	max-width: 600px;
-}
-
-.divide {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	margin-left: 30px;
+	width: 330px;
 	display: flex;
-	justify-content: space-evenly;
+	flex-direction: column;
+	gap: 10px;
+	padding: 0px 20px 5px 20px;
+	background-color: black;
+	border-radius: 25px;
+	-webkit-transition: .4s ease-in-out;
+	transition: .4s ease-in-out;
 }
 
-h1 {
-	text-align: center;
+.heading-in {
+	margin: 30px 0px 20px 0px;
+	color: rgb(255, 255, 255);
+	font-size: 22px;
+}
+
+.field {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	border-radius: 25px;
+	padding: 10px;
+	border: none;
+	outline: none;
+	color: white;
+	background-color: black;
+}
+
+.input-field {
+	width: 80%;
+	border: 1px solid black;
+	border-radius: 15px;
+	padding: 15px;
+	color: white;
+	background-color: #363636;
+	box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.3);
+	transition: 300ms ease-in-out;
+}
+
+.input-field:hover {
+	border: 1px solid whitesmoke;
 }
 
 h4 {
-	margin: 10px 0;
-}
-
-div {
-	margin-bottom: 15px;
-}
-
-input[type="text"], input[type="number"], textarea, select {
-	width: 90%;
-	padding: 10px;
-	border: 1px solid #ccc;
-	border-radius: 3px;
-}
-
-.left-aling {
-	display: flex;
-	align-items: center;
-}
-
-.left_content {
-	margin-right: 10px;
-}
-
-button {
-	display: block;
-	width: 50%;
-	padding: 10px;
-	background-color: #007bff;
+	margin: 0;
 	color: white;
-	border: none;
-	border-radius: 3px;
-	cursor: pointer;
 }
 
-button:hover {
-	background-color: #0056b3;
+.closebtn {
+	float: right;
+	position: relative;
+	top: 100px;
+	right: 100px;
+	font-size: 50px;
+	color: aliceblue;
+}
+
+.closebtn:hover {
+	color: #ffd343;
+}
+
+.form .btn {
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+	margin: 20px 0px;
+}
+
+.button1 {
+	padding: 10px 20px;
+	border-radius: 5px;
+	margin-right: 10px;
+	border: none;
+	outline: none;
+	-webkit-transition: .4s ease-in-out;
+	transition: .4s ease-in-out;
+	background-color: #252525;
+	color: white;
+}
+
+.button1:hover {
+	background-color: rgb(102, 160, 219);
+	color: white;
+}
+
+span {
+	color: white;
+}
+
+a {
+	color: white;
+	margin: 0px 0px 10px 20px;
 }
 </style>
 <meta charset="ISO-8859-1">
@@ -69,24 +139,31 @@ button:hover {
 </head>
 <body>
 
-	<form class="form" action="user/profile" method="get">
+	<form class="form" action="login" method="get">
+		<p class="heading-in">Sign in</p>
 		<div>
 			<h4>Email:</h4>
 		</div>
 		<div>
-			<input type="text" name="email" required>
+			<input type="email" name="email" class="input-field"
+				placeholder="example@abc.com" title="Use proper email"
+				autocomplete="off" required>
 		</div>
-
 		<div>
 			<h4>Password:</h4>
 		</div>
 		<div>
-			<input type="password" name="password" required>
+			<input type="password" name="password" class="input-field"
+				placeholder="Password" required>
 		</div>
+		<div class="btn">
+			<button type="submit" class="button1" id="login_form">Login</button>
 
-		<button type="submit">Login</button>
+		</div>
+		<p>
+			<span>Create new account:</span> <a href="user/new">Sign Up</a>
+		</p>
 	</form>
-	<a href="user/new"><button>Register</button></a>
 
 </body>
 </html>

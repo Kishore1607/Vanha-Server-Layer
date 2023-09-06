@@ -1,3 +1,8 @@
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Set"%>
+<%@page import="in.fssa.vanha.model.ProductDetailDTO"%>
+<%@page import="in.fssa.vanha.model.Assets"%>
 <%@page import="in.fssa.vanha.model.Product"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
@@ -6,83 +11,87 @@
 <head>
 <style>
 .form {
+	text-aling: center;
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 20px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	font-family: Arial, sans-serif;
+	max-width: 600px;
+}
+
+.divide {
 	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	background-color: #ffffff;
-	padding: 30px;
-	width: 450px;
-	border-radius: 20px;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-		Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	justify-content: space-evenly;
 }
 
-::placeholder {
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-		Oxygen, Ubuntu, Cantarell, ' Open Sans ', ' Helvetica Neue ',
-		sans-serif;
+h1 {
+	text-align: center;
 }
 
-.flex-column>label {
-	color: #151717;
-	font-weight: 600;
+div {
+	margin-bottom: 15px;
 }
 
-.inputForm {
-	border: 1.5px solid #ecedec;
-	border-radius: 10px;
-	height: 50px;
+input[type="text"], input[type="number"], textarea, select {
+	width: 90%;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+}
+
+.left-aling {
 	display: flex;
 	align-items: center;
-	padding-left: 10px;
-	transition: 0.2s ease-in-out;
 }
 
-.input {
-	margin-left: 10px;
-	border-radius: 10px;
-	border: none;
-	width: 100%;
-	height: 100%;
+.left_content {
+	margin-right: 10px;
 }
 
-.input:focus {
-	outline: none;
+textarea {
+	height: 100px;
 }
 
-.inputForm:focus-within {
-	border: 1.5px solid #2d79f3;
-}
-
-.flex-row {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 10px;
-	justify-content: space-between;
-}
-
-.flex-row>div>label {
-	font-size: 14px;
-	color: black;
-	font-weight: 400;
-}
-
-
-.btn {
-	width: 100%;
-	height: 50px;
-	border-radius: 10px;
-	font-weight: 500;
-	gap: 10px;
-	border: 1px solid #2d79f3;
-	background-color: #2d79f3;
+button {
+	display: block;
+	width: 30%;
+	padding: 10px;
+	background-color: #007bff;
 	color: white;
+	border: none;
+	border-radius: 3px;
 	cursor: pointer;
 }
 
-.btn:hover {
-	border: 1px solid black;
+button:hover {
+	background-color: #0056b3;
+}
+
+a {
+	text-decoration: none;
+}
+
+a button {
+	display: block;
+	width: 130%;
+	padding: 10px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+a button:hover {
+	background-color: #0056b3;
+}
+
+.btn {
+	display: flex;
+	justify-content: space-evenly;
 }
 </style>
 
@@ -92,61 +101,96 @@
 <body>
 
 	<%
-	Product product = (Product) request.getAttribute("detail");
+	ProductDetailDTO product = (ProductDetailDTO) request.getAttribute("detail");
 	%>
 	<form class="form" action="update" method="post">
-		<div class="flex-column">
-			<label>Name </label>
-		</div>
-		<div class="inputForm">
-			<input placeholder="Enter the Name" name="name" class="input" type="text" value="<%= product.getName() %>">
-		</div>
+		<h2>Update your product</h2>
+		<div class="divide">
+			<section>
+				<div class="flex-column">
+					<label>Name </label>
+				</div>
+				<div class="inputForm">
+					<input placeholder="Enter the Name" name="name" class="input"
+						type="text" value="<%=product.getProductName()%>">
+				</div>
 
-		<div class="flex-column">
-			<label>Used Period </label>
-		</div>
-		<div class="inputForm">
-			<input placeholder="Enter the number of Year/month" name="period" class="input"
-				type="number" value="<%= product.getUsedPeriod() %>">
-		</div>
+				<div class="flex-column">
+					<label>Used Period </label>
+				</div>
+				<div class="inputForm">
+					<input placeholder="Enter the number of Year/month" name="period"
+						class="input" type="number" value="<%=product.getUsedPeriod()%>">
+				</div>
 
-		<div class="flex-column">
-			<label>Used Duration </label>
-		</div>
-		<div class="inputForm">
-			<input placeholder="Enter the duration year/month" name="duration" class="input"
-				type="text" value="<%= product.getUsedDuration() %>">
-		</div>
+				<div class="flex-column">
+					<label>Used Duration </label>
+				</div>
+				<div class="inputForm">
+					<input placeholder="Enter the duration year/month" name="duration"
+						class="input" type="text" value="<%=product.getUsedDuration()%>">
+				</div>
+				<div class="inputForm"></div>
 
-		<div class="flex-column">
-			<label>Description </label>
-		</div>
-		<div class="inputForm">
-			<input placeholder="Enter the text" class="input" name="description" type="text" value="<%= product.getDescription() %>">
-		</div>
+				<div class="flex-column">
+					<label>Price </label>
+				</div>
+				<div class="inputForm">
+					<input placeholder="Enter the price" class="input" name="price"
+						type="number" value="<%=product.getPrice()%>">
+				</div>
 
-		<div class="flex-column">
-			<label>Price </label>
+				<div class="flex-column">
+					<label>Minimum Price </label>
+				</div>
+				<div class="inputForm">
+					<input placeholder="Enter the minimum price" name="min_price"
+						class="input" type="number" value="<%=product.getMinPrice()%>">
+				</div>
+			</section>
+			<section>
+				<div class="flex-column">
+					<label>Product Id: </label>
+				</div>
+				<div class="inputForm">
+					<input placeholder="Enter the Name" name="product_id" class="input"
+						type="text" value="<%=product.getProductId()%>" readonly>
+				</div>
+				<%
+				Set<Assets> assetsSet = product.getAssets();
+				List<Assets> assetsList = new ArrayList<>(assetsSet);
+				for (int i = 0; i < 4; i++) {
+					Assets asset = (i < assetsList.size()) ? assetsList.get(i) : new Assets();
+				%>
+				<input class="input" name="asetId" type="hidden"
+					value="<%=asset.getId()%>">
+				<div class="flex-column">
+					<label>Image <%=i + 1%>:
+					</label>
+				</div>
+				<div class="inputForm">
+					<input placeholder="Enter the URL" class="input" name="url"
+						type="text"
+						value="<%=(asset.getValue() != null) ? asset.getValue() : ""%>">
+				</div>
+				<%
+				}
+				%>
+			</section>
 		</div>
-		<div class="inputForm">
-			<input placeholder="Enter the price" class="input" name="price" type="number" value="<%= product.getPrice() %>">
+		<div>
+			<p>Product Description:</p>
 		</div>
-
-		<div class="flex-column">
-			<label>Minimum Price </label>
+		<div>
+			<textarea placeholder="Enter the text" class="textarea"
+				name="description"><%=product.getDescription()%></textarea>
 		</div>
-		<div class="inputForm">
-			<input placeholder="Enter the minimum price" name="min_price" class="input"
-				type="number" value="<%= product.getMinPrice() %>">
+		<div class="btn">
+			<button type="submit">Update Product</button>
+			<a href="../productdetail?productId=<%=product.getProductId()%>">
+				<button type="button">Back</button>
+			</a>
 		</div>
-		<div class="flex-column">
-			<label>Product Id: </label>
-		</div>
-		<div class="inputForm">
-			<input placeholder="Enter the Name" name="product_id" class="input" type="text" value="<%= product.getProductId()%>" readonly>
-		</div>
-
-		<button class="btn" type="submit">Update Product</button>
 	</form>
 </body>
 </html>
