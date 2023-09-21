@@ -1,8 +1,7 @@
 package in.fssa.vanha.servlets;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,10 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import in.fssa.vanha.exception.ServiceException;
 import in.fssa.vanha.exception.ValidationException;
-import in.fssa.vanha.model.Assets;
 import in.fssa.vanha.model.Product;
+import in.fssa.vanha.model.ResponseEntity;
 import in.fssa.vanha.service.ProductService;
 
 /**
@@ -30,55 +31,44 @@ public class UpdateProductServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		ProductService ps = new ProductService();
-		Product p = new Product();
-		String id = request.getParameter("product_id");
-		System.out.println(id);
-		p.setProductId(id);
-		p.setName(request.getParameter("name"));
-		System.out.print(request.getParameter("name"));
-		p.setDescription(request.getParameter("description"));
-		p.setUsedDuration(request.getParameter("duration"));
-		String sprice = request.getParameter("price");
-		String smin_price = request.getParameter("min_price");
-		String speriod = request.getParameter("period");
-
-		int price = Integer.parseInt(sprice);
-		int min_price = Integer.parseInt(smin_price);
-		int period = Integer.parseInt(speriod);
-		p.setPrice(price);
-		p.setMinPrice(min_price);
-		p.setUsedPeriod(period);
-
-		String[] asetIds = request.getParameterValues("asetId");
-		String[] urls = request.getParameterValues("url");
-		
-		Set<Assets> assetsList = new HashSet<>();
-
-		if (asetIds != null && urls != null && asetIds.length == urls.length) {
-
-			for (int i = 0; i < asetIds.length; i++) {
-				String asetId = asetIds[i];
-				String url = urls[i];
-
-				Assets asset = new Assets();
-				asset.setId(Integer.parseInt(asetId));
-				asset.setValue(url);
-
-				assetsList.add(asset);
-			}
+		BufferedReader reader = request.getReader();
+		StringBuilder requestBody = new StringBuilder();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			requestBody.append(line);
 		}
 
+		Gson gson = new Gson();
+		Product productRequest = gson.fromJson(requestBody.toString(), Product.class);
+
+		ProductService ps = new ProductService();
+		Product p = new Product();
+		String id = productRequest.getProductId();
+		p.setProductId(id);
+		p.setName(productRequest.getName());
+		p.setDescription(productRequest.getDescription());
+		p.setUsedDuration(productRequest.getUsedDuration());
+		p.setPrice(productRequest.getPrice());
+		p.setMinPrice(productRequest.getMinPrice());
+		p.setUsedPeriod(productRequest.getUsedPeriod());
+
 		try {
-			ps.update(p, assetsList);
+			ps.update(p);
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(200);
+			res.setData(1);
+			res.setMessage("Updated product details successfully");
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} catch (ValidationException e) {
 			e.printStackTrace();
 		}
 
-		String newURL = request.getContextPath() + "/home/profile/productdetail?productId=" + id;
-		response.sendRedirect(newURL);
 	}
 
 }

@@ -8,4 +8,7 @@
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
+	<session-config>
+		<session-timeout>30</session-timeout> <!-- Set to the desired timeout value in minutes -->
+	</session-config>
 </web-app>

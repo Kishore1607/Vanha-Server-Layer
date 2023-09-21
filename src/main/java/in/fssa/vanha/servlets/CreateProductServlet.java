@@ -1,8 +1,8 @@
 package in.fssa.vanha.servlets;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -55,7 +55,7 @@ public class CreateProductServlet extends HttpServlet {
 		p.setUsedDuration(request.getParameter("duration"));
 		p.setCategory(request.getParameter("category"));
 
-		Set<Assets> assets = new HashSet<>();
+		List<Assets> assets = new ArrayList<>();
 		for (int i = 1; i <= 4; i++) {
 			Assets a = new Assets();
 			a.setValue(request.getParameter("asset" + i));
@@ -64,13 +64,12 @@ public class CreateProductServlet extends HttpServlet {
 		}
 		try {
 			ps.create(p, assets, userId);
+			response.sendRedirect("./profile");
 		} catch (ServiceException e) {
 			e.printStackTrace();
 		} catch (ValidationException e) {
 			e.printStackTrace();
 		}
-
-		response.sendRedirect("./profile");
 	}
 
 }

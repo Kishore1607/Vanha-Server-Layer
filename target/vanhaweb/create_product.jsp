@@ -1,3 +1,4 @@
+<%@page import="in.fssa.vanha.model.User"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -23,10 +24,6 @@
 
 h1 {
 	text-align: center;
-}
-
-h4 {
-	margin: 10px 0;
 }
 
 div {
@@ -63,55 +60,79 @@ button {
 button:hover {
 	background-color: #0056b3;
 }
+
+.error {
+	color: red;
+}
 </style>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Add Product</title>
 </head>
 <body>
+	<jsp:include page="header.jsp" />
+	<%
+	String errorMessage = request.getParameter("errorMessage");
+	if (errorMessage != null) {
+		out.println("<p class='error'>" + errorMessage + "</p>");
+	}
+	%>
+	<%
+	User user = (User) session.getAttribute("user");
+	%>
 	<form class="form" action="create" method="post">
 		<h1>Add Your Product</h1>
 		<div class="divide">
 			<section>
 				<div>
-					<h4>Product Id:</h4>
+					<p>Product Id:</p>
 				</div>
 				<div>
 					<input type="text" name="product_id">
 				</div>
 				<div>
-					<h4>Your email:</h4>
+					<p>Your email:</p>
 				</div>
 				<div>
-					<input type="text" name="seller_id">
+					<input type="text" name="seller_id" value="<%=user.getEmail()%>"
+						readonly>
 				</div>
 				<div>
-					<h4>Product Name:</h4>
+					<p>Product Name:</p>
 				</div>
 				<div>
 					<input type="text" name="name" required>
 				</div>
 				<div>
 					<div>
-						<h4>Product Price:</h4>
+						<p>Product Price:</p>
 					</div>
 					<div>
 						<input type="number" name="price" required>
 					</div>
 				</div>
-			</section>
-			<section>
 				<div>
 					<div>
-						<h4>Minimum Price:</h4>
+						<p>Image 1</p>
 					</div>
 					<div>
-						<input type="number" name="min_price" required>
+						<input type="text" name="asset1" required>
 					</div>
 				</div>
 				<div>
 					<div>
+						<p>Image 3</p>
+					</div>
+					<div>
+						<input type="text" name="asset2" required>
+					</div>
+				</div>
+			</section>
+			<section>
+
+				<div>
+					<div>
 						<div>
-							<h4>Used</h4>
+							<p>Used</p>
 						</div>
 						<div>
 							<input type="number" name="period" required>
@@ -119,37 +140,76 @@ button:hover {
 					</div>
 					<div>
 						<div>
-							<h4>Duration</h4>
+							<p>Category</p>
 						</div>
 						<div>
-							<input type="text" name="duration" required>
+							<select name="category" required>
+								<option value="car">Car</option>
+								<option value="bike">Bike</option>
+								<option value="computer">Computer</option>
+								<option value="mobile">Mobile</option>
+							</select>
 						</div>
+					</div>
 
+					<div>
+						<div>
+							<p>Duration</p>
+						</div>
+						<div>
+							<select name="duration" required>
+								<option value="month">Month</option>
+								<option value="year">Year</option>
+							</select>
+						</div>
 					</div>
 					<div>
 						<div>
-							<h4>Category</h4>
+							<p>Minimum Price:</p>
 						</div>
 						<div>
-							<input type="text" name="category" required>
+							<input type="number" name="min_price" required>
 						</div>
 					</div>
 					<div>
 						<div>
-							<h4>URL</h4>
+							<p>Image 2</p>
 						</div>
 						<div>
-							<input type="text" name="asset" required>
+							<input type="text" name="asset3" required>
+						</div>
+					</div>
+					<div>
+						<div>
+							<p>Image 4</p>
+						</div>
+						<div>
+							<input type="text" name="asset4" required>
 						</div>
 					</div>
 				</div>
 			</section>
 		</div>
 		<div>
-			<h4>Product Description:</h4>
+			<p>Product Description:</p>
 		</div>
 		<div>
-			<textarea name="description" required></textarea>
+			<textarea name="description" required>
+* Type: Gaming
+* Brand: Asus
+* Model: Vivobook Pro 15 M6500QC-HN541WS
+* OS: Windows 11 Operating System
+* Type: 64-bit
+* Dimensions (WxHxD): 46 x 28.9 x 6.4 cm
+* Weight: 1.8 Kg
+* Colors: Quiet Blue
+*Display Size: 15.6 Inches
+* Display Resolution: 1920 x 1080 Pixels
+* DISPLAY TYPE: LED
+* Processor: AMD Ryzen 5 5600H
+* Graphic Processor: Nvidia GeForce RTX 3060
+* Clock Speed: 4.2 GHz
+</textarea>
 		</div>
 		<button type="submit">Add Product</button>
 	</form>
