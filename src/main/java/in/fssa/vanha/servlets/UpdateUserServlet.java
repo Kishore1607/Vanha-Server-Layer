@@ -59,10 +59,27 @@ public class UpdateUserServlet extends HttpServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(responseJson);
-		} catch (ServiceException e) {
-			e.printStackTrace();
+		}  catch (ServiceException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
 		} catch (ValidationException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 	}
 

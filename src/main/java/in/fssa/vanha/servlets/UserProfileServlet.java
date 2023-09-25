@@ -36,15 +36,18 @@ public class UserProfileServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String id = request.getHeader("Authorization");
+		
 		String email = id.substring(7);
 		if (email.startsWith("\"") && email.endsWith("\"")) {
 			email = email.substring(1, email.length() - 1);
 		}
-
+		
 		ProductService ps = new ProductService();
 
 		List<ListProductDTO> products;
 		User user;
+
+		Gson gson = new Gson();
 		try {
 			products = ps.findAllProductsBySellerId(email);
 			user = UserService.findUserByEmail(email);
@@ -57,20 +60,32 @@ public class UserProfileServlet extends HttpServlet {
 			res.setData(dto);
 			res.setMessage("User product details fetched successfully");
 
-			// Convert the DTO to JSON
-			Gson gson = new Gson();
-			String responseJson = gson.toJson(dto);
-
-			// Set the response content type and character encoding
+			String responseJson = gson.toJson(res);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 
-			// Write the JSON response to the client
 			response.getWriter().write(responseJson);
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
 		} catch (ValidationException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 
 	}
@@ -106,12 +121,27 @@ public class UserProfileServlet extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			out.write(responseJson);
 
-		} catch (ValidationException e) {
-			e.printStackTrace();
-			// Handle validation errors and send an appropriate JSON response
 		} catch (ServiceException e) {
-			e.printStackTrace();
-			// Handle service errors and send an appropriate JSON response
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
+		} catch (ValidationException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 
 		out.flush();

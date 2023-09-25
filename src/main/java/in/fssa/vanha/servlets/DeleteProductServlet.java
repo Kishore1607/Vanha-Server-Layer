@@ -1,6 +1,7 @@
 package in.fssa.vanha.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,21 +29,14 @@ public class DeleteProductServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
-//		String productId = request.getParameter("productId");
-		
-		String productId = request.getHeader("Authorization");
-		
-		String id = productId.substring(7);
-		if (productId.startsWith("\"") && productId.endsWith("\"")) {
-			productId = productId.substring(1, productId.length() - 1);
-		}
-		
-		System.out.println(id);
-		
+
+		String id = request.getParameter("productId");
+
 		ProductService ps = new ProductService();
 
+		PrintWriter out = response.getWriter();
 		try {
+			System.out.println("enter");
 			ps.delete(id);
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(200);
@@ -53,13 +47,32 @@ public class DeleteProductServlet extends HttpServlet {
 			String responseJson = gson.toJson(res);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
+			out.write(responseJson);
+			
+		}  catch (ServiceException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
+
+			Gson gson = new Gson();
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(responseJson);
-		} catch (ServiceException e) {
-			e.printStackTrace();
+
 		} catch (ValidationException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			Gson gson = new Gson();
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 
 	}
-
 }

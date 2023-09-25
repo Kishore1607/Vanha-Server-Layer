@@ -34,6 +34,7 @@ public class SellerProductDetailServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String productId = request.getParameter("productId");
+		Gson gson = new Gson();
 
 		try {
 			ProductDetailDTO product = ProductService.productdetail(productId);
@@ -43,21 +44,39 @@ public class SellerProductDetailServlet extends HttpServlet {
 			res.setData(product);
 			res.setMessage("product details fetched successfully");
 
-			Gson gson = new Gson();
 			String responseJson = gson.toJson(res);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(responseJson);
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
 		} catch (ValidationException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		Gson gson = new Gson();
+		
 		StringBuilder stringBuilder = new StringBuilder();
         String line;
         try {
@@ -72,7 +91,6 @@ public class SellerProductDetailServlet extends HttpServlet {
 
         String imgSrc = jsonObject.getString("imgSrc");
         int id = jsonObject.getInt("id");
-        System.out.println(id);
         String productId = jsonObject.getString("productId");
 
         AssetsService as = new AssetsService();
@@ -84,12 +102,28 @@ public class SellerProductDetailServlet extends HttpServlet {
         int productid = -1;
 		try {
 			productid = ProductService.ifExistsOrNot(productId).getId();
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		} catch (ValidationException e) {
-			e.printStackTrace();
-		}        
+		}  catch (ServiceException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
 
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
+		} catch (ValidationException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+		}
 		try {
 			as.updateAssets(asset, productid);
 
@@ -98,15 +132,31 @@ public class SellerProductDetailServlet extends HttpServlet {
 			res.setData(1);
 			res.setMessage("Updated user details successfully");
 
-			Gson gson = new Gson();
 			String responseJson = gson.toJson(res);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(responseJson);
-		} catch (ServiceException e) {
-			e.printStackTrace();
+		}  catch (ServiceException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
 		} catch (ValidationException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 	}
 

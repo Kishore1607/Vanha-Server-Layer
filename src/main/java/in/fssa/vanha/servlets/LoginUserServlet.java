@@ -31,7 +31,10 @@ public class LoginUserServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
 		PrintWriter out = response.getWriter();
+		Gson gson = new Gson();
+
 		try {
 
 			BufferedReader reader = request.getReader();
@@ -41,7 +44,6 @@ public class LoginUserServlet extends HttpServlet {
 				requestBody.append(line);
 			}
 
-			Gson gson = new Gson();
 			User userRequest = gson.fromJson(requestBody.toString(), User.class);
 
 			String email = userRequest.getEmail();
@@ -54,6 +56,7 @@ public class LoginUserServlet extends HttpServlet {
 
 			User user = us.loginUser(u);
 			
+			if(user != null) {
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(200);
 			res.setData(user);
@@ -63,16 +66,41 @@ public class LoginUserServlet extends HttpServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			out.write(responseJson);
+			}else {
+				ResponseEntity res = new ResponseEntity();
+				res.setStatusCode(400);
+				res.setData(user);
+				res.setMessage("Invalid credentials");
 
-			
-		} catch (ValidationException e) {
-			e.printStackTrace();
-			// Handle validation errors and send an appropriate JSON response
+				String responseJson = gson.toJson(res);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				out.write(responseJson);
+			}
+
 		} catch (ServiceException e) {
-			e.printStackTrace();
-			// Handle service errors and send an appropriate JSON response
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500);
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
+		} catch (ValidationException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400);
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
-		
+
 		out.flush();
 
 	}

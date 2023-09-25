@@ -35,9 +35,10 @@ public class GetAllBids extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String productId = request.getParameter("productId");
-		System.out.println(productId);
 
 		ViewBidsDTO viewBids = new ViewBidsDTO();
+		
+		Gson gson = new Gson();
 
 		try {
 			Product product = ProductService.ifExistsOrNot(productId);
@@ -62,7 +63,6 @@ public class GetAllBids extends HttpServlet {
 			res.setData(viewBids);
 			res.setMessage("User product details fetched successfully");
 
-			Gson gson = new Gson();
 			String responseJson = gson.toJson(res);
 
 			response.setContentType("application/json");
@@ -71,9 +71,26 @@ public class GetAllBids extends HttpServlet {
 			response.getWriter().write(responseJson);
 
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
 		} catch (ValidationException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 	}
 

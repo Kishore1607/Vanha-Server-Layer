@@ -31,6 +31,8 @@ public class ProductDetailServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String productId = request.getParameter("productId");
+		
+		Gson gson = new Gson();
 
 		try {
 			ProductDetailDTO product = ProductService.productdetail(productId);
@@ -40,19 +42,32 @@ public class ProductDetailServlet extends HttpServlet {
 			res.setData(product);
 			res.setMessage("product details fetched successfully");
 
-			Gson gson = new Gson();
 			String responseJson = gson.toJson(res);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(responseJson);
 
-//			request.setAttribute("productDetails", product);
-//			RequestDispatcher dispatcher = request.getRequestDispatcher("/product_detail.jsp");
-//			dispatcher.forward(request, response);
-		} catch (ServiceException e) {
-			e.printStackTrace();
+		}  catch (ServiceException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
 		} catch (ValidationException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 	}
 

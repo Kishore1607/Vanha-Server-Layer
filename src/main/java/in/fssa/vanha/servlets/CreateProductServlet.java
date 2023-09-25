@@ -9,13 +9,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import org.json.JSONObject;
+
+import com.google.gson.Gson;
 
 import in.fssa.vanha.exception.ServiceException;
 import in.fssa.vanha.exception.ValidationException;
 import in.fssa.vanha.model.Assets;
 import in.fssa.vanha.model.Product;
-import in.fssa.vanha.model.User;
+import in.fssa.vanha.model.ResponseEntity;
 import in.fssa.vanha.service.ProductService;
 
 /**
@@ -32,43 +35,88 @@ public class CreateProductServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
-		String userId = user.getEmail();
+		StringBuilder stringBuilder = new StringBuilder();
+		String line;
+		
+		Gson gson = new Gson();
+		
+		while ((line = request.getReader().readLine()) != null) {
+				stringBuilder.append(line);
+		}
+			
+
+		JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+
+		String productId = jsonObject.getString("unique");
+		String name = jsonObject.getString("name");
+		String description = jsonObject.getString("description");
+		int price = jsonObject.getInt("price");
+		int minPrice = jsonObject.getInt("minimumPrice");
+		int period = jsonObject.getInt("date");
+		String duration = jsonObject.getString("duration");
+		String category = jsonObject.getString("category");
+		String email = jsonObject.getString("user_id");
+
+		if (email.startsWith("\"") && email.endsWith("\"")) {
+			email = email.substring(1, email.length() - 1);
+		}
+
+		List<Assets> assetArray = new ArrayList<>();
+
+		for (int i = 1; i <= 4; i++) {
+		    String assetKey = "asset" + i;
+		    if (jsonObject.has(assetKey) && !jsonObject.isNull(assetKey)) {
+		        Assets asset = new Assets();
+		        asset.setValue(jsonObject.getString(assetKey));
+		        assetArray.add(asset);
+		    }
+		}
 
 		ProductService ps = new ProductService();
 		Product p = new Product();
-		String id = request.getParameter("product_id");
-		p.setProductId(id);
-		p.setName(request.getParameter("name"));
-		p.setDescription(request.getParameter("description"));
-		String sprice = request.getParameter("price");
-		String smin_price = request.getParameter("min_price");
-		String speriod = request.getParameter("period");
-
-		int price = Integer.parseInt(sprice);
-		int min_price = Integer.parseInt(smin_price);
-		int period = Integer.parseInt(speriod);
+		p.setProductId(productId);
+		p.setName(name);
+		p.setDescription(description);
 		p.setPrice(price);
-		p.setMinPrice(min_price);
+		p.setMinPrice(minPrice);
 		p.setUsedPeriod(period);
-		p.setUsedDuration(request.getParameter("duration"));
-		p.setCategory(request.getParameter("category"));
+		p.setUsedDuration(duration);
+		p.setCategory(category);
 
-		List<Assets> assets = new ArrayList<>();
-		for (int i = 1; i <= 4; i++) {
-			Assets a = new Assets();
-			a.setValue(request.getParameter("asset" + i));
-			System.out.println(request.getParameter("asset" + i));
-			assets.add(a);
-		}
 		try {
-			ps.create(p, assets, userId);
-			response.sendRedirect("./profile");
-		} catch (ServiceException e) {
-			e.printStackTrace();
+			ps.create(p, email);
+
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(200);
+			res.setData(1);
+			res.setMessage("Product deleted successfully");
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
+		}  catch (ServiceException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+
 		} catch (ValidationException e) {
-			e.printStackTrace();
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
+
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 	}
 

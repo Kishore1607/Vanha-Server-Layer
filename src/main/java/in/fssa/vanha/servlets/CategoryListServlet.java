@@ -8,7 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
@@ -16,7 +15,6 @@ import in.fssa.vanha.exception.ServiceException;
 import in.fssa.vanha.exception.ValidationException;
 import in.fssa.vanha.model.ListProductDTO;
 import in.fssa.vanha.model.ResponseEntity;
-import in.fssa.vanha.model.User;
 import in.fssa.vanha.service.ProductService;
 
 /**
@@ -36,13 +34,15 @@ public class CategoryListServlet extends HttpServlet {
 
 		String cate = request.getParameter("Category");
 
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
+		String user = request.getHeader("Authorization");
 
 		Set<ListProductDTO> products = null;
+		
+		Gson gson = new Gson();
 
 		if (user == null) {
 			try {
+
 				ProductService ps = new ProductService();
 				products = ps.findAllProductsByCategory(cate);
 				ResponseEntity res = new ResponseEntity();
@@ -50,36 +50,73 @@ public class CategoryListServlet extends HttpServlet {
 				res.setData(products);
 				res.setMessage("product details fetched successfully");
 
-				Gson gson = new Gson();
 				String responseJson = gson.toJson(res);
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().write(responseJson);
 
-			} catch (ServiceException e) {
-				e.printStackTrace();
+			}  catch (ServiceException e) {
+				String errorMessage = e.getMessage();
+				ResponseEntity res = new ResponseEntity();
+				res.setStatusCode(500); // Internal Server Error
+				res.setMessage(errorMessage);
+
+				String responseJson = gson.toJson(res);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(responseJson);
+
 			} catch (ValidationException e) {
-				e.printStackTrace();
+				String errorMessage = e.getMessage();
+				ResponseEntity res = new ResponseEntity();
+				res.setStatusCode(400); // Bad Request
+				res.setMessage(errorMessage);
+
+				String responseJson = gson.toJson(res);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(responseJson);
 			}
 		} else {
 			try {
+				String email = user.substring(7);
+				if (email.startsWith("\"") && email.endsWith("\"")) {
+					email = email.substring(1, email.length() - 1);
+				}
+
 				ProductService ps = new ProductService();
-				products = ps.findAllProductsByCategory(cate, user.getEmail());
+				products = ps.findAllProductsByCategory(cate, email);
 				ResponseEntity res = new ResponseEntity();
 				res.setStatusCode(200);
 				res.setData(products);
 				res.setMessage("product details fetched successfully");
 
-				Gson gson = new Gson();
 				String responseJson = gson.toJson(res);
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().write(responseJson);
 
 			} catch (ServiceException e) {
-				e.printStackTrace();
+				String errorMessage = e.getMessage();
+				ResponseEntity res = new ResponseEntity();
+				res.setStatusCode(500); // Internal Server Error
+				res.setMessage(errorMessage);
+
+				String responseJson = gson.toJson(res);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(responseJson);
+
 			} catch (ValidationException e) {
-				e.printStackTrace();
+				String errorMessage = e.getMessage();
+				ResponseEntity res = new ResponseEntity();
+				res.setStatusCode(400); // Bad Request
+				res.setMessage(errorMessage);
+
+				String responseJson = gson.toJson(res);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(responseJson);
 			}
 		}
 	}

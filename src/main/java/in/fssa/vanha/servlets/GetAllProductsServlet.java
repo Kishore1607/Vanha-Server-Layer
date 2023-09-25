@@ -36,6 +36,8 @@ public class GetAllProductsServlet extends HttpServlet {
 
 		String user = request.getHeader("Authorization");
 
+		Gson gson = new Gson();
+
 		Set<ListProductDTO> products = null;
 
 		if (user == null) {
@@ -46,15 +48,31 @@ public class GetAllProductsServlet extends HttpServlet {
 				res.setData(products);
 				res.setMessage("product details fetched successfully");
 
-				Gson gson = new Gson();
 				String responseJson = gson.toJson(res);
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().write(responseJson);
 			} catch (ServiceException e) {
-				e.printStackTrace();
+				String errorMessage = e.getMessage();
+				ResponseEntity res = new ResponseEntity();
+				res.setStatusCode(500); // Internal Server Error
+				res.setMessage(errorMessage);
+
+				String responseJson = gson.toJson(res);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(responseJson);
+
 			} catch (ValidationException e) {
-				e.printStackTrace();
+				String errorMessage = e.getMessage();
+				ResponseEntity res = new ResponseEntity();
+				res.setStatusCode(400); // Bad Request
+				res.setMessage(errorMessage);
+
+				String responseJson = gson.toJson(res);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(responseJson);
 			}
 		} else {
 			try {
@@ -69,20 +87,34 @@ public class GetAllProductsServlet extends HttpServlet {
 				res.setData(products);
 				res.setMessage("product details fetched successfully");
 
-				Gson gson = new Gson();
 				String responseJson = gson.toJson(res);
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().write(responseJson);
+
 			} catch (ServiceException e) {
-				e.printStackTrace();
+				String errorMessage = e.getMessage();
+				ResponseEntity res = new ResponseEntity();
+				res.setStatusCode(500); // Internal Server Error
+				res.setMessage(errorMessage);
+
+				String responseJson = gson.toJson(res);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(responseJson);
+
 			} catch (ValidationException e) {
-				e.printStackTrace();
+				String errorMessage = e.getMessage();
+				ResponseEntity res = new ResponseEntity();
+				res.setStatusCode(400); // Bad Request
+				res.setMessage(errorMessage);
+
+				String responseJson = gson.toJson(res);
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(responseJson);
 			}
 		}
 
-//	    request.setAttribute("products", products);
-//	    RequestDispatcher dispatcher = request.getRequestDispatcher("list_of_products.jsp");
-//	    dispatcher.forward(request, response);
 	}
 }
