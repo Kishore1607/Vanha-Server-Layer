@@ -35,12 +35,7 @@ public class UserProfileServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String id = request.getHeader("Authorization");
-		
-		String email = id.substring(7);
-		if (email.startsWith("\"") && email.endsWith("\"")) {
-			email = email.substring(1, email.length() - 1);
-		}
+		String email = request.getParameter("userEmail");
 		
 		ProductService ps = new ProductService();
 

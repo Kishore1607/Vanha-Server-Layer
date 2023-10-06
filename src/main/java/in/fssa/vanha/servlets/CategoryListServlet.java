@@ -34,13 +34,13 @@ public class CategoryListServlet extends HttpServlet {
 
 		String cate = request.getParameter("Category");
 
-		String user = request.getHeader("Authorization");
+		String email = request.getParameter("email");
 
 		Set<ListProductDTO> products = null;
 		
 		Gson gson = new Gson();
 
-		if (user == null) {
+		if (email == null) {
 			try {
 
 				ProductService ps = new ProductService();
@@ -79,7 +79,6 @@ public class CategoryListServlet extends HttpServlet {
 			}
 		} else {
 			try {
-				String email = user.substring(7);
 				if (email.startsWith("\"") && email.endsWith("\"")) {
 					email = email.substring(1, email.length() - 1);
 				}
