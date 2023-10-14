@@ -23,21 +23,21 @@ import in.fssa.vanha.service.BidHistoryService;
 @WebServlet("/home/listproduct")
 public class ListCardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		String email = request.getParameter("userEmail");
-		
+
 		Gson gson = new Gson();
 		try {
 
 			BidHistoryService bh = new BidHistoryService();
 			List<YourListDTO> product = bh.listProductCards(email);
-			System.out.println(product.toString());
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(200);
 			res.setData(product);
@@ -48,7 +48,7 @@ public class ListCardServlet extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(responseJson);
 
-		}  catch (ServiceException e) {
+		} catch (ServiceException e) {
 			String errorMessage = e.getMessage();
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(500);

@@ -33,7 +33,7 @@ public class CategoryListServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		String cate = request.getParameter("Category");
-
+		
 		String email = request.getParameter("email");
 
 		Set<ListProductDTO> products = null;
@@ -42,9 +42,12 @@ public class CategoryListServlet extends HttpServlet {
 
 		if (email == null) {
 			try {
+				if (email.startsWith("\"") && email.endsWith("\"")) {
+					email = email.substring(1, email.length() - 1);
+				}
 
 				ProductService ps = new ProductService();
-				products = ps.findAllProductsByCategory(cate);
+				products = ps.findAllProductsByCategory(cate, email);
 				ResponseEntity res = new ResponseEntity();
 				res.setStatusCode(200);
 				res.setData(products);
@@ -79,17 +82,14 @@ public class CategoryListServlet extends HttpServlet {
 			}
 		} else {
 			try {
-				if (email.startsWith("\"") && email.endsWith("\"")) {
-					email = email.substring(1, email.length() - 1);
-				}
 
 				ProductService ps = new ProductService();
-				products = ps.findAllProductsByCategory(cate, email);
+				products = ps.findAllProductsByCategory(cate);
 				ResponseEntity res = new ResponseEntity();
 				res.setStatusCode(200);
 				res.setData(products);
 				res.setMessage("product details fetched successfully");
-
+				
 				String responseJson = gson.toJson(res);
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");

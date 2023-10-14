@@ -48,7 +48,8 @@ public class GetAllBids extends HttpServlet {
 
 			int id = product.getId();
 
-			String image = AssetsService.findAssetByProductId(id);
+			AssetsService as = new AssetsService();
+			String image = as.findAssetByProductId(id);
 
 			viewBids.setProductImage(image);
 

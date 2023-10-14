@@ -36,7 +36,6 @@ public class DeleteProductServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 		try {
-			System.out.println("enter");
 			ps.delete(id);
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(200);
