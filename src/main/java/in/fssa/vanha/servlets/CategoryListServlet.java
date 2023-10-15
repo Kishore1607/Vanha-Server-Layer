@@ -30,93 +30,57 @@ public class CategoryListServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 
 		String cate = request.getParameter("Category");
-		
+
 		String email = request.getParameter("email");
 
+		ProductService ps = new ProductService();
+
 		Set<ListProductDTO> products = null;
-		
 		Gson gson = new Gson();
 
-		if (email == null) {
-			try {
-				if (email.startsWith("\"") && email.endsWith("\"")) {
-					email = email.substring(1, email.length() - 1);
-				}
+		try {
+		    if (email == null) {
+		        products = ps.findAllProductsByCategoryWithoutEmail(cate);
+		    } else {
+		        if (email.startsWith("\"") && email.endsWith("\"")) {
+		            email = email.substring(1, email.length() - 1);
+		        }
+		        products = ps.findAllProductsByCategory(cate, email);
+		    }
 
-				ProductService ps = new ProductService();
-				products = ps.findAllProductsByCategory(cate, email);
-				ResponseEntity res = new ResponseEntity();
-				res.setStatusCode(200);
-				res.setData(products);
-				res.setMessage("product details fetched successfully");
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(200);
+			res.setData(products);
+			res.setMessage("product details fetched successfully");
 
-				String responseJson = gson.toJson(res);
-				response.setContentType("application/json");
-				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(responseJson);
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 
-			}  catch (ServiceException e) {
-				String errorMessage = e.getMessage();
-				ResponseEntity res = new ResponseEntity();
-				res.setStatusCode(500); // Internal Server Error
-				res.setMessage(errorMessage);
+		} catch (ServiceException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(500); // Internal Server Error
+			res.setMessage(errorMessage);
 
-				String responseJson = gson.toJson(res);
-				response.setContentType("application/json");
-				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(responseJson);
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
+		} catch (ValidationException e) {
+			String errorMessage = e.getMessage();
+			ResponseEntity res = new ResponseEntity();
+			res.setStatusCode(400); // Bad Request
+			res.setMessage(errorMessage);
 
-			} catch (ValidationException e) {
-				String errorMessage = e.getMessage();
-				ResponseEntity res = new ResponseEntity();
-				res.setStatusCode(400); // Bad Request
-				res.setMessage(errorMessage);
-
-				String responseJson = gson.toJson(res);
-				response.setContentType("application/json");
-				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(responseJson);
-			}
-		} else {
-			try {
-
-				ProductService ps = new ProductService();
-				products = ps.findAllProductsByCategory(cate);
-				ResponseEntity res = new ResponseEntity();
-				res.setStatusCode(200);
-				res.setData(products);
-				res.setMessage("product details fetched successfully");
-				
-				String responseJson = gson.toJson(res);
-				response.setContentType("application/json");
-				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(responseJson);
-
-			} catch (ServiceException e) {
-				String errorMessage = e.getMessage();
-				ResponseEntity res = new ResponseEntity();
-				res.setStatusCode(500); // Internal Server Error
-				res.setMessage(errorMessage);
-
-				String responseJson = gson.toJson(res);
-				response.setContentType("application/json");
-				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(responseJson);
-
-			} catch (ValidationException e) {
-				String errorMessage = e.getMessage();
-				ResponseEntity res = new ResponseEntity();
-				res.setStatusCode(400); // Bad Request
-				res.setMessage(errorMessage);
-
-				String responseJson = gson.toJson(res);
-				response.setContentType("application/json");
-				response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(responseJson);
-			}
+			String responseJson = gson.toJson(res);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(responseJson);
 		}
 	}
+
 }
