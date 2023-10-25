@@ -29,21 +29,47 @@ public class CreateProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Handles HTTP POST requests for creating a new product.
+	 *
+	 * This method processes incoming JSON data, extracts product information, and
+	 * creates a new product in the system. It expects a JSON payload containing the
+	 * following fields: - "unique" (String): The unique identifier for the product.
+	 * - "name" (String): The name of the product. - "description" (String): A
+	 * description of the product. - "price" (int): The price of the product. -
+	 * "minimumPrice" (int): The minimum price for the product. - "date" (int): The
+	 * period for which the product has been used. - "duration" (String): The
+	 * duration of usage. - "category" (String): The category to which the product
+	 * belongs. - "user_id" (String): The user identifier associated with the
+	 * product.
+	 * 
+	 * It also allows for up to 4 optional asset fields, "asset1" to "asset4," which
+	 * should be included in the JSON payload as needed.
+	 * 
+	 * Upon successful creation of the product, it returns a JSON response with a
+	 * 200 status code and a success message. If there are any errors during the
+	 * process, it provides appropriate error responses with status codes: - 500
+	 * (Internal Server Error) for ServiceException. - 400 (Bad Request) for
+	 * ValidationException.
+	 * 
+	 * @param request  HttpServletRequest object representing the incoming HTTP
+	 *                 request.
+	 * @param response HttpServletResponse object for sending the HTTP response.
+	 *
+	 * @throws ServletException if a servlet-specific error occurs.
+	 * @throws IOException      if an I/O error occurs while processing the request
+	 *                          or response.
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		StringBuilder stringBuilder = new StringBuilder();
 		String line;
-		
+
 		Gson gson = new Gson();
-		
+
 		while ((line = request.getReader().readLine()) != null) {
-				stringBuilder.append(line);
+			stringBuilder.append(line);
 		}
-			
 
 		JSONObject jsonObject = new JSONObject(stringBuilder.toString());
 
@@ -64,12 +90,12 @@ public class CreateProductServlet extends HttpServlet {
 		List<Assets> assetArray = new ArrayList<>();
 
 		for (int i = 1; i <= 4; i++) {
-		    String assetKey = "asset" + i;
-		    if (jsonObject.has(assetKey) && !jsonObject.isNull(assetKey)) {
-		        Assets asset = new Assets();
-		        asset.setValue(jsonObject.getString(assetKey));
-		        assetArray.add(asset);
-		    }
+			String assetKey = "asset" + i;
+			if (jsonObject.has(assetKey) && !jsonObject.isNull(assetKey)) {
+				Assets asset = new Assets();
+				asset.setValue(jsonObject.getString(assetKey));
+				assetArray.add(asset);
+			}
 		}
 
 		ProductService ps = new ProductService();
@@ -96,7 +122,7 @@ public class CreateProductServlet extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(responseJson);
 
-		}  catch (ServiceException e) {
+		} catch (ServiceException e) {
 			String errorMessage = e.getMessage();
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(500); // Internal Server Error

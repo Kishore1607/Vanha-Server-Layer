@@ -29,15 +29,27 @@ public class GetAllBids extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Handles a GET request to retrieve product details and bid history for a given
+	 * product ID.
+	 *
+	 * This method is responsible for fetching information about a specific product,
+	 * including its name, price, image, and the history of bids placed on it.
+	 *
+	 * @param request  The HTTPServletRequest object containing the request
+	 *                 parameters. Expects a "productId" parameter to specify the
+	 *                 product to retrieve.
+	 * @param response The HTTPServletResponse object used to send the JSON response
+	 *                 to the client.
+	 * @throws ServletException If any servlet-specific errors occur.
+	 * @throws IOException      If an input or output error occurs while processing
+	 *                          the request.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String productId = request.getParameter("productId");
 
 		ViewBidsDTO viewBids = new ViewBidsDTO();
-		
+
 		Gson gson = new Gson();
 
 		try {

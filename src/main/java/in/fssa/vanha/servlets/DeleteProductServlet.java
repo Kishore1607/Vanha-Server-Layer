@@ -24,8 +24,35 @@ public class DeleteProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Handles HTTP GET requests for deleting a product based on the provided
+	 * productId.
+	 * 
+	 * @param request  The HttpServletRequest object containing request information.
+	 * @param response The HttpServletResponse object for sending the response.
+	 * @throws ServletException If an error occurs during servlet processing.
+	 * @throws IOException      If an I/O error occurs during response handling.
+	 * 
+	 *                          This method performs the following tasks: 1.
+	 *                          Retrieves the "productId" parameter from the
+	 *                          request. 2. Calls the ProductService to delete the
+	 *                          product identified by the productId. 3. If the
+	 *                          deletion is successful, it sends a JSON response
+	 *                          with a success message. - Status Code: 200 (OK) -
+	 *                          Response Data: 1 - Response Message: "Product
+	 *                          deleted successfully" 4. If a ServiceException is
+	 *                          caught, it sends a JSON response with an error
+	 *                          message indicating an internal server error. -
+	 *                          Status Code: 500 (Internal Server Error) - Response
+	 *                          Message: Error message from the ServiceException. 5.
+	 *                          If a ValidationException is caught, it sends a JSON
+	 *                          response with an error message indicating a bad
+	 *                          request. - Status Code: 400 (Bad Request) - Response
+	 *                          Message: Error message from the ValidationException.
+	 * 
+	 *                          The response is formatted as JSON using the Gson
+	 *                          library. The response content type is set to
+	 *                          "application/json". Character encoding is set to
+	 *                          UTF-8.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -47,8 +74,8 @@ public class DeleteProductServlet extends HttpServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			out.write(responseJson);
-			
-		}  catch (ServiceException e) {
+
+		} catch (ServiceException e) {
 			String errorMessage = e.getMessage();
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(500); // Internal Server Error

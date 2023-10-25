@@ -29,14 +29,18 @@ public class UserProfileServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * This method handles HTTP GET requests to fetch user product details by email.
+	 *
+	 * @param request  The HttpServletRequest object containing the request data.
+	 * @param response The HttpServletResponse object for sending the response.
+	 * @throws ServletException If there's a servlet-related exception.
+	 * @throws IOException      If there's an I/O-related exception.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		String email = request.getParameter("userEmail");
-		
+
 		ProductService ps = new ProductService();
 
 		List<ListProductDTO> products;
@@ -85,6 +89,18 @@ public class UserProfileServlet extends HttpServlet {
 
 	}
 
+	/**
+	 * Handles HTTP POST requests for updating user image.
+	 *
+	 * This method expects a JSON request body containing user information and uses
+	 * the UserService to update the user's image. It then constructs and sends a
+	 * JSON response to the client.
+	 *
+	 * @param request  The HTTP servlet request object.
+	 * @param response The HTTP servlet response object.
+	 * @throws ServletException If a servlet-specific error occurs.
+	 * @throws IOException      If an I/O error occurs.
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

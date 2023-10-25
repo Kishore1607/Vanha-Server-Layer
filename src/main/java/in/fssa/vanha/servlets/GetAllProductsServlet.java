@@ -27,8 +27,16 @@ public class GetAllProductsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * This method handles HTTP GET requests and provides information about
+	 * products.
+	 *
+	 * @param request  The HttpServletRequest object containing client request
+	 *                 information.
+	 * @param response The HttpServletResponse object for sending the response back
+	 *                 to the client.
+	 * @throws ServletException If there is an issue with the servlet operation.
+	 * @throws IOException      If there is an I/O error while processing the
+	 *                          request or response.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

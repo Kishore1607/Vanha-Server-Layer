@@ -25,8 +25,19 @@ public class CategoryListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Handles HTTP GET requests to retrieve product information by category and
+	 * email.
+	 *
+	 * This method is responsible for processing incoming HTTP GET requests and
+	 * returning a JSON response containing product details based on the specified
+	 * category and optionally the user's email.
+	 *
+	 * @param request  The HttpServletRequest object representing the incoming HTTP
+	 *                 request.
+	 * @param response The HttpServletResponse object for sending the HTTP response.
+	 *
+	 * @throws ServletException If there is an issue with the servlet handling.
+	 * @throws IOException      If there is an issue with input or output.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -35,20 +46,22 @@ public class CategoryListServlet extends HttpServlet {
 
 		String email = request.getParameter("email");
 
+		System.out.println(email);
+
 		ProductService ps = new ProductService();
 
 		Set<ListProductDTO> products = null;
 		Gson gson = new Gson();
 
 		try {
-		    if (email == null) {
-		        products = ps.findAllProductsByCategoryWithoutEmail(cate);
-		    } else {
-		        if (email.startsWith("\"") && email.endsWith("\"")) {
-		            email = email.substring(1, email.length() - 1);
-		        }
-		        products = ps.findAllProductsByCategory(cate, email);
-		    }
+			if (email == null) {
+				products = ps.findAllProductsByCategoryWithoutEmail(cate);
+			} else {
+				if (email.startsWith("\"") && email.endsWith("\"")) {
+					email = email.substring(1, email.length() - 1);
+				}
+				products = ps.findAllProductsByCategory(cate, email);
+			}
 
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(200);

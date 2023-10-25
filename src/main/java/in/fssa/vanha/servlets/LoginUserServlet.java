@@ -26,8 +26,13 @@ public class LoginUserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Handles HTTP POST requests for user login. This method receives user credentials in JSON format
+	 * from the request body, attempts to authenticate the user, and sends a response in JSON format.
+	 *
+	 * @param request  An HttpServletRequest object representing the incoming HTTP request.
+	 * @param response An HttpServletResponse object for sending the HTTP response.
+	 * @throws ServletException If there is a servlet-related exception.
+	 * @throws IOException      If there is an I/O-related exception.
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

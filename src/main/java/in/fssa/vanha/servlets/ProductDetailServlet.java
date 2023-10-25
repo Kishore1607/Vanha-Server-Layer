@@ -25,17 +25,25 @@ public class ProductDetailServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Handles HTTP GET requests to retrieve product details based on the provided
+	 * productId.
+	 *
+	 * @param request  The HttpServletRequest containing client request information.
+	 * @param response The HttpServletResponse for sending the response to the
+	 *                 client.
+	 *
+	 * @throws ServletException If there's a servlet-related error.
+	 * @throws IOException      If there's an I/O error when handling the request.
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String productId = request.getParameter("productId");
-		
+
 		Gson gson = new Gson();
 
 		try {
-			ProductDetailDTO product = ProductService.productdetail(productId);
+			ProductService productService = new ProductService();
+			ProductDetailDTO product = productService.productdetail(productId);
 
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(200);
@@ -47,7 +55,7 @@ public class ProductDetailServlet extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(responseJson);
 
-		}  catch (ServiceException e) {
+		} catch (ServiceException e) {
 			String errorMessage = e.getMessage();
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(500); // Internal Server Error

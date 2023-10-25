@@ -25,8 +25,12 @@ public class UpdateProductServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * This method handles HTTP POST requests to update product details.
+	 *
+	 * @param request  The HttpServletRequest object containing the request data.
+	 * @param response The HttpServletResponse object for sending the response.
+	 * @throws ServletException If there's a servlet-related exception.
+	 * @throws IOException      If there's an I/O-related exception.
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

@@ -26,8 +26,18 @@ public class CreateUserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Handles HTTP POST requests for user registration.
+	 *
+	 * This method processes incoming HTTP POST requests containing user
+	 * registration data in JSON format. It deserializes the JSON data, validates
+	 * and creates a new user in the system, and sends an appropriate JSON response.
+	 *
+	 * @param request  The HttpServletRequest containing the user registration data
+	 *                 in JSON format.
+	 * @param response The HttpServletResponse to send the JSON response.
+	 *
+	 * @throws ServletException If there is an issue with the servlet's operation.
+	 * @throws IOException      If an I/O error occurs while processing the request.
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -46,7 +56,7 @@ public class CreateUserServlet extends HttpServlet {
 		long number = userRequest.getNumber();
 		String password = userRequest.getPassword();
 		String location = userRequest.getLocation();
-		
+
 		try {
 			UserService us = new UserService();
 			User u = new User();
@@ -59,7 +69,7 @@ public class CreateUserServlet extends HttpServlet {
 			us.create(u);
 
 			PrintWriter out = response.getWriter();
-			
+
 			// Prepare and send a JSON response
 			ResponseEntity res = new ResponseEntity();
 			res.setStatusCode(200);
