@@ -43,6 +43,8 @@ public class GetAllProductsServlet extends HttpServlet {
 		ProductService ps = new ProductService();
 
 		String user = request.getHeader("Authorization");
+		
+		System.out.println(user);
 
 		Gson gson = new Gson();
 

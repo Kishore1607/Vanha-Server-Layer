@@ -46,8 +46,9 @@ public class GetAllBids extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+	
 		String productId = request.getParameter("productId");
-
+		
 		ViewBidsDTO viewBids = new ViewBidsDTO();
 
 		Gson gson = new Gson();

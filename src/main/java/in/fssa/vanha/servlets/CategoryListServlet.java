@@ -46,8 +46,6 @@ public class CategoryListServlet extends HttpServlet {
 
 		String email = request.getParameter("email");
 
-		System.out.println(email);
-
 		ProductService ps = new ProductService();
 
 		Set<ListProductDTO> products = null;

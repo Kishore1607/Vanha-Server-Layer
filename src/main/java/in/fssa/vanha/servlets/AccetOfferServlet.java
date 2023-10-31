@@ -114,7 +114,7 @@ public class AccetOfferServlet extends HttpServlet {
 				detail.setProductImage(productImage);
 				detail.setProductName(product.getName());
 				detail.setProductPrice(product.getPrice());
-
+				
 				ResponseEntity res = new ResponseEntity();
 				res.setStatusCode(200);
 				res.setData(detail);
